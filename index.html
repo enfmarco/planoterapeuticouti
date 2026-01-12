@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Plano Terapêutico - UTI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --warning: #d97706;
+            --gray: #6b7280;
+            --light-gray: #f3f4f6;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-section, .preview-section {
+            background: var(--light-gray);
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .section-title {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: normal;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .plano-preview {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            margin-top: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        
+        .plano-preview h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .plano-preview h4 {
+            color: var(--primary);
+            margin: 15px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .plano-preview ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .plano-preview li {
+            margin-bottom: 8px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 5px solid var(--warning);
+        }
+        
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 5px solid var(--danger);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            border-top: 1px solid #e5e7eb;
+            margin-top: 30px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-heartbeat"></i> Gerador de Plano Terapêutico - UTI</h1>
+            <p>Sistema para criação de planos terapêuticos individualizados para pacientes em terapia intensiva</p>
+        </header>
+        
+        <div class="main-content">
+            <!-- SEÇÃO DE FORMULÁRIO -->
+            <section class="form-section">
+                <h2 class="section-title"><i class="fas fa-user-plus"></i> Dados do Paciente</h2>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>Preencha todos os dados do paciente para gerar um plano terapêutico individualizado.</div>
+                </div>
+                
+                <form id="formPaciente">
+                    <div class="form-group">
+                        <label for="nome"><i class="fas fa-user"></i> Nome do Paciente *</label>
+                        <input type="text" id="nome" placeholder="Nome completo do paciente" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="idade"><i class="fas fa-calendar-alt"></i> Idade *</label>
+                        <input type="number" id="idade" min="0" max="120" placeholder="Idade em anos" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sexo"><i class="fas fa-venus-mars"></i> Sexo *</label>
+                        <select id="sexo" required>
+                            <option value="">Selecione...</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="peso"><i class="fas fa-weight"></i> Peso (kg) *</label>
+                        <input type="number" id="peso" step="0.1" placeholder="Peso em kg" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="diagnostico"><i class="fas fa-stethoscope"></i> Diagnóstico Principal *</label>
+                        <select id="diagnostico" required>
+                            <option value="">Selecione o diagnóstico...</option>
+                            <option value="sepse">Sepse/Choque Séptico</option>
+                            <option value="avc">AVC (Acidente Vascular Cerebral)</option>
+                            <option value="iam">IAM (Infarto Agudo do Miocárdio)</option>
+                            <option value="tce">TCE (Traumatismo Cranioencefálico)</option>
+                            <option value="dra">DRA (Lesão Renal Aguda)</option>
+                            <option value="ards">ARDS (Síndrome do Desconforto Respiratório Agudo)</option>
+                            <option value="pancreatite">Pancreatite Aguda Grave</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-procedures"></i> Comorbidades</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="comorbidades" value="has">
+                                <span>Hipertensão Arterial</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="comorbidades" value="dm">
+                                <span>Diabetes Mellitus</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="comorbidades" value="irc">
+                                <span>Doença Renal Crônica</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="comorbidades" value="icc">
+                                <span>Insuficiência Cardíaca</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="comorbidades" value="dpoc">
+                                <span>DPOC</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="comorbidades" value="obesidade">
+                                <span>Obesidade</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="alergias"><i class="fas fa-allergies"></i> Alergias Medicamentosas</label>
+                        <textarea id="alergias" placeholder="Liste as alergias conhecidas (ex: Penicilina, Contrastes iodados)"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="exames"><i class="fas fa-vial"></i> Exames Relevantes</label>
+                        <textarea id="exames" placeholder="Exames importantes (ex: Lactato 4.2, Leucócitos 18.000, Creatinina 2.1)"></textarea>
+                    </div>
+                    
+                    <div class="actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-medical"></i> Gerar Plano Terapêutico
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="limparFormulario()">
+                            <i class="fas fa-trash-alt"></i> Limpar Formulário
+                        </button>
+                    </div>
+                </form>
+            </section>
+            
+            <!-- SEÇÃO DE VISUALIZAÇÃO DO PLANO -->
+            <section class="preview-section">
+                <h2 class="section-title"><i class="fas fa-file-prescription"></i> Plano Terapêutico Gerado</h2>
+                
+                <div id="alertaAlergia" class="alert alert-danger hidden">
+                    <i class="fas fa-skull-crossbones"></i>
+                    <div id="textoAlerta"></div>
+                </div>
+                
+                <div id="planoContainer" class="hidden">
+                    <div class="plano-preview" id="planoPreview">
+                        <!-- Conteúdo do plano será inserido aqui via JavaScript -->
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-success" onclick="imprimirPlano()">
+                            <i class="fas fa-print"></i> Imprimir Plano
+                        </button>
+                        <button class="btn btn-primary" onclick="salvarPlano()">
+                            <i class="fas fa-save"></i> Salvar como PDF
+                        </button>
+                        <button class="btn" onclick="copiarPlano()" style="background: var(--gray); color: white;">
+                            <i class="fas fa-copy"></i> Copiar para Área de Transferência
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="placeholderPlano" class="plano-preview">
+                    <h3>Plano Terapêutico</h3>
+                    <p>Preencha os dados do paciente à esquerda e clique em "Gerar Plano Terapêutico" para visualizar o plano individualizado aqui.</p>
+                    <p>O sistema utilizará protocolos baseados em diretrizes internacionais (Surviving Sepsis Campaign, AMIB, etc.) para criar um plano específico para o paciente.</p>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p><i class="fas fa-info-circle"></i> Este sistema é uma ferramenta de apoio à decisão clínica. Todas as intervenções devem ser validadas por médico responsável.</p>
+            <p>Desenvolvido para uso em Unidades de Terapia Intensiva | Versão 1.0</p>
+        </footer>
+    </div>
+
+    <!-- Adicione esta linha ANTES do fechamento do body -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        // JavaScript será adicionado no próximo passo
+        // Este é apenas um placeholder
+    </script>
+</body>
+</html>
